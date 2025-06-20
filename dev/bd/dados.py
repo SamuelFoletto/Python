@@ -1,16 +1,27 @@
 import sqlite3
 
-conexao = sqlite3.connect('titulo.db')
+def conecta_bd():
+    conexao = sqlite3.connect('titulo.db')
+    return conexao
 
-cursor = conexao.cursor()
+def insere_dados(nome, ano, nota):
+    conexao = conecta_bd()
+    cursor = conexao.cursor()
 
-cursor.execute(
+    cursor.execute(
     """
         INSERT INTO filmes(nome, ano,nota)
-        VALUES('Sonic', 2020, 8);
-    """
-)
+        VALUES(?, ?, ?);
+    """, (nome, ano, nota)
+    )   
+    conexao.commit()
+    conexao.close()
 
-conexao.commit()
-conexao.close()
-print('Dados adicionados com sucesso!')
+def listar_dados():
+    conexao = conecta_bd()
+    cursor = conexao.cursor()
+    cursor.execute("SELECT * FROM filmes")
+
+    dados = cursor.fetchall()
+    cursor.close()
+    return dados
